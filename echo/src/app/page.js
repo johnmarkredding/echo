@@ -4,17 +4,30 @@ import styles from './page.module.css'
 import { useState, useEffect } from 'react'
 
 export default () => {
-  useEffect(() => {
-    // get messages in my area - dep: my location;
-  },[]);
   const [messages, setMessages] = useState([{id: 1, text:"hey"}]);
   const [echoInput, setEchoInput] = useState("");
+  const [userPosition, setUserPosition] = useState(null);
+
+  useEffect(() => {
+    // TODO: on page load, get messages in my area - depend on: client location.
+
+    // On page load, save user location to state.
+    navigator.geolocation?.getCurrentPosition(setUserPosition, console.error);
+  }, []);
   const sendNewEcho = (e) => {
     e.preventDefault();
-    const newMessages = [{id: messages.length + 1, text: echoInput}, ...messages];
-    setEchoInput("");
-    setMessages(newMessages);
-  };
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        setUserPosition(position);
+        setMessages([...messages, {id: messages.length + 1, text: echoInput, coords: position.coords}]);
+        setEchoInput("");
+        console.log(position.coords);
+      }, 
+      err => {
+        console.error(err);
+        alert("Must enable location to leave an echo.");
+      });
+  }
   return (
     <main className={styles.main}>
       <h1>Echo</h1>
@@ -27,4 +40,4 @@ export default () => {
       </form>
     </main>
   )
-}
+};
