@@ -6,19 +6,31 @@ import { useState, useEffect } from 'react'
 export default () => {
   const [messages, setMessages] = useState([{id: 1, text:"hey"}]);
   const [echoInput, setEchoInput] = useState("");
-  const [userPosition, setUserPosition] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationAllowed, setLocationAllowed] = useState(false);
 
   useEffect(() => {
     // TODO: on page load, get messages in my area - depend on: client location.
 
     // On page load, save user location to state.
-    navigator.geolocation?.getCurrentPosition(setUserPosition, console.error);
+    navigator.geolocation.getCurrentPosition((clientProvidedPostion) => {
+      // Either location is allowed or we set it to allowed;
+      locationAllowed || setLocationAllowed(true);
+      
+      setUserLocation(clientProvidedPostion);
+
+      console.info("Location is shared");
+    }, (clientPositionError) => {
+      setUserLocation(null);
+      setLocationAllowed(false);
+      console.error(clientPositionError);
+    });
   }, []);
   const sendNewEcho = (e) => {
     e.preventDefault();
     navigator.geolocation.getCurrentPosition(
       position => {
-        setUserPosition(position);
+        setLocationAllowed(position);
         setMessages([...messages, {id: messages.length + 1, text: echoInput, coords: position.coords}]);
         setEchoInput("");
         console.log(position.coords);
