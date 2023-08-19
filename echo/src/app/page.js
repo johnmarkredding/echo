@@ -20,12 +20,9 @@ export default () => {
   useEffect(() => {
     const permissionsSubscription = permissionsObservable$
     .subscribe({
-      next: permissionGranted => {
-        console.log(permissionGranted);
-        setLocationAllowed(permissionGranted);
-      },
-      error: (err) => {
-        console.error(err);
+      next: permissionGranted => { setLocationAllowed(permissionGranted) },
+      error: (permissionError) => {
+        console.error(permissionError);
         setLocationAllowed(false);
       },
       complete: () => { console.log("No more permissions changes will be emitted") }
@@ -37,14 +34,19 @@ export default () => {
 
   // Setup geolocation subscription
   useEffect(() => {
-    const geolocationSubscription = geolocationObservable$
-    .subscribe({
-      next: (position) => { console.log(position) },
-      error: (positionError) => { console.error(positionError) },
-      complete: () => {console.log("No more geolocation changes will be emitted")}
-    });
-    return () => {
-      geolocationSubscription.unsubscribe();
+    if (locationAllowed) {
+      const geolocationSubscription = geolocationObservable$
+      .subscribe({
+        next: (position) => { setUserLocation(position.coords) },
+        error: (positionError) => {
+          console.error(positionError);
+          setUserLocation(null);
+        },
+        complete: () => { console.log("No more geolocation changes will be emitted") }
+      });
+      return () => {
+        geolocationSubscription?.unsubscribe();
+      }
     }
   }, [locationAllowed]);
 
@@ -61,7 +63,7 @@ export default () => {
     <main className={styles.main}>
       <h1>Echo</h1>
       {
-        locationAllowed
+        locationAllowed && userLocation
         ? <>
           <h3>{userLocation?.latitude + ", " + userLocation?.longitude}</h3>
           <ol>
@@ -72,7 +74,7 @@ export default () => {
             <input required id="echo-input" onChange={e => setEchoInput(e.target.value)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
           </form>
         </>
-        : <h2>Location isn't accessible right now</h2>
+        : <><h2>No known location.</h2><p>Be sure to allow access to location in your browser.</p></>
       }
     </main>
   )
