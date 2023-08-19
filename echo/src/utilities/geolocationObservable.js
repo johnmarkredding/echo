@@ -10,7 +10,7 @@ export default (geoOptions = { enableHighAccuracy: true }) => {
         geoOptions
       );
     } catch (setupError) {
-      subscriber.error(setupError);
+      console.error(setupError);
     }
     return () => {
       try {
