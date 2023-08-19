@@ -2,8 +2,8 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { distinctUntilChanged, map } from 'rxjs';
-import { createGeolocationObservable, createPermissionsObservable } from '../utilities/geolocationObservable';
+import { distinctUntilChanged, map, startWith } from 'rxjs';
+import { createGeolocationObservable, createPermissionsObservable } from '../utilities';
 
 
 export default () => {
@@ -14,7 +14,17 @@ export default () => {
 
   // TODO: on page load, get messages in my area - depend on: client location.
   // TODO: Create new observable for permissions changes. Look into promise->observable;
-  
+  useEffect(() => {
+    const permissionsSubscription$ = createPermissionsObservable()
+    .subscribe({
+      next: permissionsStatus => { console.log(permissionsStatus) },
+      error: (err) => { console.error(err) },
+      complete: () => {console.log("No more permissions changes will be emitted")}
+    });
+    return () => {
+      permissionsSubscription$.unsubscribe();
+    }
+  }, []);
 
   const sendNewEcho = (e) => {
     e.preventDefault();

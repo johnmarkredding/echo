@@ -1,7 +1,5 @@
 import { Observable } from 'rxjs';
 
-
-
 const setupPermissionsChangeHandler = (cb) => (permissionStatus) => {
   console.log(permissionStatus);
   // cb(permissionStatus.state);
@@ -13,7 +11,7 @@ const setupPermissionsChangeHandler = (cb) => (permissionStatus) => {
   // };
 };
 
-export const createPermissionsObservable = () => {
+export default () => {
   return new Observable(subscriber => {
     
     const handlePermissionsChange = setupPermissionsChangeHandler(subscriber.next);
