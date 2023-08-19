@@ -1,8 +1,11 @@
 import { Observable } from 'rxjs';
 
 const setupPermissionsChangeHandler = (sendToSubscriber) => (permissionStatus) => {
-  sendToSubscriber(permissionStatus.state);
-  permissionStatus.onchange = (permissionsEvent) => sendToSubscriber(permissionsEvent.target);
+  const checkPermissionGranted = (permissionIs) => (permissionIs === "granted" || permissionIs === "prompt");
+  sendToSubscriber(checkPermissionGranted(permissionStatus.state));
+  permissionStatus.onchange = (permissionsEvent) => {
+    sendToSubscriber(checkPermissionGranted(permissionsEvent.target.state));
+  }
   
   return () => {
     permissionStatus.onchange = null; // Remove the handler when unsubscribed
