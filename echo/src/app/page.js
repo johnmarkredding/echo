@@ -2,7 +2,6 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { distinctUntilChanged, map, startWith } from 'rxjs';
 import { createGeolocationObservable, createPermissionsObservable } from '../utilities';
 
 
