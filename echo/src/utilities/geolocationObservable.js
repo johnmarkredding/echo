@@ -2,14 +2,22 @@ import { Observable } from 'rxjs';
 
 export const createGeolocationObservable = (geoOptions = { enableHighAccuracy: true }) => {
   return new Observable(subscriber => {
-    const watchId = navigator.geolocation.watchPosition(
-      (nextPosition) => {subscriber.next(nextPosition)},
-      (positionError) => {subscriber.error(positionError)},
-      geoOptions
-    );
+    let watchId = null;
+    try {
+      watchId = navigator.geolocation.watchPosition(
+        (nextPosition) => {subscriber.next(nextPosition)},
+        (positionError) => {subscriber.error(positionError)},
+        geoOptions
+      );
+    } catch (setupError) {
+      subscriber.error(setupError);
+    }
     return () => {
-      navigator.geolocation.clearWatch(watchId);
-      subscriber.complete();
+      try {
+        navigator.geolocation.clearWatch(watchId);
+      } catch (err) {
+        console.error(err);
+      }
     };
   });
 };

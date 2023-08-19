@@ -3,7 +3,7 @@
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import { distinctUntilChanged, map } from 'rxjs';
-import { createGeolocationObservable } from '../utilities/geolocationObservable';
+import { createGeolocationObservable, createPermissionsObservable } from '../utilities/geolocationObservable';
 
 
 export default () => {
@@ -15,36 +15,6 @@ export default () => {
   // TODO: on page load, get messages in my area - depend on: client location.
   // TODO: Create new observable for permissions changes. Look into promise->observable;
   
-  useEffect(async () => {
-    const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
-    console.log(permissionStatus);
-  });
-  useEffect(() => {
-    // Setup an Observable that emits locations if accessible, or errors.
-    const geolocationSub = createGeolocationObservable({enableHighAccuracy: true, maximumAge: 2000})
-    .pipe(
-      map(({coords}) => coords), 
-      distinctUntilChanged()
-    )
-    .subscribe({
-      next: (nextPosition) => {
-        console.log("next", nextPosition)
-        setLocationAllowed(true);
-        setUserLocation(nextPosition);
-      },
-      error: (err) => {
-        console.error(err);
-        setLocationAllowed(false);
-        setUserLocation(null);
-      },
-      complete: () => {
-        console.log('Observable completed');
-        setLocationAllowed(false);
-        setUserLocation(null);
-      }
-    });
-    return () => { geolocationSub.unsubscribe() };
-  }, []);
 
   const sendNewEcho = (e) => {
     e.preventDefault();
