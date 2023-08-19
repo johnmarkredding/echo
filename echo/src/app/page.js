@@ -10,21 +10,30 @@ export default () => {
   const [messages, setMessages] = useState([{id: 1, text:"hey"}]);
   const [echoInput, setEchoInput] = useState("");
   const [userLocation, setUserLocation] = useState(null);
-  const [locationAllowed, setLocationAllowed] = useState(true);
+  const [locationAllowed, setLocationAllowed] = useState(false);
 
   // TODO: on page load, get messages in my area - depend on: client location.
+
+  // Setup permissions subscription
   useEffect(() => {
     const permissionsSubscription$ = createPermissionsObservable()
     .subscribe({
-      next: permissionsStatus => { console.log(permissionsStatus) },
-      error: (err) => { console.error(err) },
-      complete: () => {console.log("No more permissions changes will be emitted")}
+      next: permissionsStatus => {
+        console.log(permissionsStatus);
+        setLocationAllowed(permissionsStatus === "prompt" || permissionsStatus === "granted");
+      },
+      error: (err) => {
+        console.error(err);
+        setLocationAllowed(false);
+      },
+      complete: () => { console.log("No more permissions changes will be emitted") }
     });
     return () => {
       permissionsSubscription$.unsubscribe();
     }
   }, []);
 
+  // Setup geolocation subscription
   useEffect(() => {
     const geolocationSubscription$ = createGeolocationObservable()
     .subscribe({
