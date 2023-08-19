@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export const createGeoPositionObservable = (geoOptions = { enableHighAccuracy: true }) => {
+export const createGeolocationObservable = (geoOptions = { enableHighAccuracy: true }) => {
   return new Observable(subscriber => {
     const watchId = navigator.geolocation.watchPosition(
       (nextPosition) => {subscriber.next(nextPosition)},
