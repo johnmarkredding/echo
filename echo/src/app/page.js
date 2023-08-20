@@ -19,7 +19,7 @@ export default () => {
   useEffect(() => {
     const permissionsSubscription = permissionsObservable$
     .subscribe({
-      next: permissionGranted => { setLocationAllowed(permissionGranted) },
+      next: (permissionGranted) => { setLocationAllowed(permissionGranted) },
       error: (permissionError) => {
         console.error(permissionError);
         setLocationAllowed(false);
