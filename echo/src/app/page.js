@@ -6,14 +6,12 @@ import { createGeolocationObservable, createPermissionsObservable } from '../uti
 
 
 export default () => {
-  const [messages, setMessages] = useState([{id: 1, text:"hey"}]);
+  const [messages, setMessages] = useState([]);
   const [echoInput, setEchoInput] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
   const geolocationObservable$ = createGeolocationObservable();
   const permissionsObservable$ = createPermissionsObservable();
-
-  // TODO: on page load, get messages in my area - depend on: client location.
 
   // Setup permissions subscription
   useEffect(() => {
