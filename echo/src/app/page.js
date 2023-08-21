@@ -3,6 +3,7 @@
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import { createGeolocationObservable, createPermissionsObservable } from '../utilities';
+import { distinctUntilChanged } from 'rxjs';
 
 
 export default () => {
@@ -16,6 +17,7 @@ export default () => {
   // Setup permissions subscription
   useEffect(() => {
     const permissionsSubscription = permissionsObservable$
+    .pipe(distinctUntilChanged())
     .subscribe({
       next: (permissionGranted) => { setLocationAllowed(permissionGranted) },
       error: (permissionError) => {
@@ -33,6 +35,7 @@ export default () => {
   useEffect(() => {
     if (locationAllowed) {
       const geolocationSubscription = geolocationObservable$
+      .pipe(distinctUntilChanged())
       .subscribe({
         next: (position) => { setUserLocation(position.coords) },
         error: (positionError) => {
