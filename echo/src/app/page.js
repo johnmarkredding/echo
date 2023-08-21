@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationObservable, createPermissionsObservable, getMessages } from '../utilities';
+import { createGeolocationObservable, createPermissionsObservable, getEchoes, sendNewEcho } from '../utilities';
 import { distinctUntilChanged } from 'rxjs';
 
 
@@ -16,7 +16,7 @@ export default () => {
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
-    setMessages(getMessages());
+    setMessages(getEchoes());
   },[userLocation]);
 
   // Setup permissions subscription
