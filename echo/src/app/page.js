@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationObservable, createPermissionsObservable, getEchoes, sendNewEcho } from '../utilities';
+import { createGeolocationObservable, createPermissionsObservable, getEchoes, postEcho } from '../utilities';
 import { distinctUntilChanged } from 'rxjs';
 
 
@@ -16,8 +16,10 @@ export default () => {
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
-    setMessages(getEchoes());
-  },[userLocation]);
+    const echoesTemp = getEchoes();
+    console.log(echoesTemp);
+    setMessages(echoesTemp);
+  }, [userLocation]);
 
   // Setup permissions subscription
   useEffect(() => {
@@ -58,7 +60,7 @@ export default () => {
   const sendNewEcho = (e) => {
     e.preventDefault();
     try {
-      postNewEcho({text:echoInput, coords:userLocation});
+      postEcho({text:echoInput, coords:userLocation});
       setEchoInput("");
     } catch {
       console.error("Not possible");
