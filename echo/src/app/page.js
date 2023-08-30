@@ -60,7 +60,7 @@ export default () => {
   const sendNewEcho = (e) => {
     e.preventDefault();
     try {
-      postEcho({text:echoInput, coords:userLocation});
+      console.log("Posted echo: ", postEcho({text:echoInput, coords:userLocation}));
       setEchoInput("");
     } catch {
       console.error("Not possible");
