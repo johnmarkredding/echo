@@ -1,4 +1,4 @@
-export default getEchoes = async () => {
+export default async () => {
   const response = await fetch(process.env.GRAPHQL_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", accept: "application/json" },
