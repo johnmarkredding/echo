@@ -23,6 +23,9 @@ export default () => {
     const echoesTemp = getEchoes();
     console.log(echoesTemp);
     setMessages(echoesTemp);
+    return () => {
+      listenToEchoes.close();
+    }
   }, [userLocation]);
 
   // Setup permissions subscription
