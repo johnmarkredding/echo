@@ -15,7 +15,7 @@ export default () => {
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
-    const listenToEchoes = new EventSource("https://localhost:8443/events", {});
+    const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_EVENT_SERVER_URL, {});
     listenToEchoes.onopen = (e) => console.log("--------Echo listener connected-----------", e);
     listenToEchoes.onerror = (err) => {console.error(err)};
     listenToEchoes.onmessage = (e) => {console.log(e.data)};
