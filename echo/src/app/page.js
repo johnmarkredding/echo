@@ -15,18 +15,23 @@ export default () => {
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
-    const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_EVENT_SERVER_URL, {});
-    listenToEchoes.onopen = (e) => console.log("--------Echo listener connected-----------", e);
+    if (!userLocation || !locationAllowed) return () => {};
+    const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_API_SERVER_URL + "/events", {});
+    listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
     listenToEchoes.onerror = (err) => {console.error(err)};
-    listenToEchoes.onmessage = (e) => {console.log(e.data)};
+    listenToEchoes.onmessage = (e) => {
+      const serverMessages = JSON.parse(e.data);
+      typeof serverMessages === 'object' ? setMessages(serverMessages) : console.log(serverMessages);
+    };
 
-    const echoesTemp = getEchoes();
-    console.log(echoesTemp);
-    setMessages(echoesTemp);
+    // const echoesTemp = getEchoes();
+    // console.log(echoesTemp);
+    // setMessages(echoesTemp);
     return () => {
       listenToEchoes.close();
+      console.log("--------Echo listener disconnected-----------");
     }
-  }, [userLocation]);
+  }, [userLocation, locationAllowed]);
 
   // Setup permissions subscription
   useEffect(() => {
@@ -67,7 +72,8 @@ export default () => {
   const sendNewEcho = (e) => {
     e.preventDefault();
     try {
-      console.log("Posted echo: ", postEcho({text:echoInput, coords:userLocation}));
+      postEcho({text:echoInput, coords: {latitude: userLocation.latitude, longitude: userLocation.longitude}})
+        .catch(console.error);
       setEchoInput("");
     } catch {
       console.error("Not possible");
