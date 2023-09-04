@@ -19,14 +19,11 @@ export default () => {
     const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_API_SERVER_URL + "/events", {});
     listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
     listenToEchoes.onerror = (err) => {console.error(err)};
-    listenToEchoes.onmessage = (e) => {
-      const serverMessages = JSON.parse(e.data);
+    listenToEchoes.onmessage = (message) => {
+      const serverMessages = JSON.parse(message?.data);
       typeof serverMessages === 'object' ? setMessages(serverMessages) : console.log(serverMessages);
     };
 
-    // const echoesTemp = getEchoes();
-    // console.log(echoesTemp);
-    // setMessages(echoesTemp);
     return () => {
       listenToEchoes.close();
       console.log("--------Echo listener disconnected-----------");
@@ -73,6 +70,7 @@ export default () => {
     e.preventDefault();
     try {
       postEcho({text:echoInput, coords: {latitude: userLocation.latitude, longitude: userLocation.longitude}})
+        .then(console.log)
         .catch(console.error);
       setEchoInput("");
     } catch {
