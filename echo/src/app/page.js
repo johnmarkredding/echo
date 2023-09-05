@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationStream, createPermissionsStream, getEchoes, handleNewEcho } from '../helpers';
+import { createGeolocationStream, createPermissionsStream, handleNewEcho } from '../helpers';
 import { distinctUntilChanged } from 'rxjs';
 
 export default () => {
@@ -26,6 +26,10 @@ export default () => {
         const serverMessages = JSON.parse(message?.data);
         typeof serverMessages === 'object' ? setMessages(serverMessages) : console.log(serverMessages);
       };
+      listenToEchoes.addEventListener('close', (closeEvent) => {
+        console.log("--------Server closed the connection-----------", closeEvent.data);
+        listenToEchoes.close();
+      });
   
       return () => {
         listenToEchoes.close();
