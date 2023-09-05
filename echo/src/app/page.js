@@ -68,14 +68,11 @@ export default () => {
 
   const sendNewEcho = (e) => {
     e.preventDefault();
-    try {
-      postEcho({text:echoInput, coords: {latitude: userLocation.latitude, longitude: userLocation.longitude}})
-        .then(console.log)
-        .catch(console.error);
-      setEchoInput("");
-    } catch {
-      console.error("Not possible");
-    }
+    const {latitude, longitude} = userLocation;
+    postEcho({text: echoInput, coords: {latitude, longitude}})
+      .then(console.log)
+      .catch((err) => {console.error("Not possible", err)})
+      .finally(() => {setEchoInput("")});
   }
   return (
     <main className={styles.main}>
