@@ -76,9 +76,9 @@ export default () => {
             <ol>
               { messages.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
             </ol>
-            <form onSubmit={handleNewEcho}>
+            <form onSubmit={(e) => {handleNewEcho(e, echoInput, userLocation, setEchoInput)}}>
               <label htmlFor="echo-input">your echo</label>
-              <input required id="echo-input" onChange={e => setEchoInput(e.target.value, userLocation)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
+              <input required id="echo-input" onChange={(e) => setEchoInput(e.target.value)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
             </form>
           </>
         : <><h2>No known location.</h2><p>Be sure to allow access to location in your browser.</p></>

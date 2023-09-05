@@ -1,8 +1,8 @@
-import { postEcho } from "./postEcho";
-export default (e, {latitude, longitude}) => {
+import postEcho from "./postEcho";
+export default (e, text, {latitude, longitude}, setText) => {
   e.preventDefault();
-  postEcho({text: echoInput, coords: {latitude, longitude}})
-    .then(console.log)
+  postEcho({text, coords: {latitude, longitude}})
+    .then((echo) => {console.log(echo.data)})
     .catch((err) => {console.error("Not possible", err)})
-    .finally(() => {setEchoInput("")});
+    .finally(() => {setText("")});
 }
