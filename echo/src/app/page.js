@@ -15,18 +15,19 @@ export default () => {
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
-    if (!userLocation || !locationAllowed) return () => {};
-    const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_API_SERVER_URL + "/echoes", {});
-    listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
-    listenToEchoes.onerror = (err) => {console.error(err)};
-    listenToEchoes.onmessage = (message) => {
-      const serverMessages = JSON.parse(message?.data);
-      typeof serverMessages === 'object' ? setMessages(serverMessages) : console.log(serverMessages);
-    };
-
-    return () => {
-      listenToEchoes.close();
-      console.log("--------Echo listener disconnected-----------");
+    if (userLocation && locationAllowed) {
+      const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_API_SERVER_URL + "/echoes", {});
+      listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
+      listenToEchoes.onerror = (err) => {console.error(err)};
+      listenToEchoes.onmessage = (message) => {
+        const serverMessages = JSON.parse(message?.data);
+        typeof serverMessages === 'object' ? setMessages(serverMessages) : console.log(serverMessages);
+      };
+  
+      return () => {
+        listenToEchoes.close();
+        console.log("--------Echo listener disconnected-----------");
+      }
     }
   }, [userLocation, locationAllowed]);
 
