@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationStream, createPermissionsStream, getEchoes, postEcho } from '../utilities';
+import { createGeolocationStream, createPermissionsStream, getEchoes, handleNewEcho } from '../utilities';
 import { distinctUntilChanged } from 'rxjs';
 
 export default () => {
@@ -66,13 +66,6 @@ export default () => {
     }
   }, [locationAllowed]);
 
-  const sendNewEcho = (e, {latitude, longitude}) => {
-    e.preventDefault();
-    postEcho({text: echoInput, coords: {latitude, longitude}})
-      .then(console.log)
-      .catch((err) => {console.error("Not possible", err)})
-      .finally(() => {setEchoInput("")});
-  }
   return (
     <main className={styles.main}>
       <h1>Echo</h1>
@@ -83,7 +76,7 @@ export default () => {
             <ol>
               { messages.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
             </ol>
-            <form onSubmit={sendNewEcho}>
+            <form onSubmit={handleNewEcho}>
               <label htmlFor="echo-input">your echo</label>
               <input required id="echo-input" onChange={e => setEchoInput(e.target.value, userLocation)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
             </form>
