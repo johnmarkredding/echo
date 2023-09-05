@@ -16,7 +16,10 @@ export default () => {
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
     if (userLocation && locationAllowed) {
-      const listenToEchoes = new EventSource(process.env.NEXT_PUBLIC_API_SERVER_URL + "/echoes", {});
+      const { latitude, longitude } = userLocation;
+      const listenToEchoes = new EventSource(
+        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`, {}
+      );
       listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
       listenToEchoes.onerror = (err) => {console.error(err)};
       listenToEchoes.onmessage = (message) => {
@@ -34,15 +37,15 @@ export default () => {
   // Setup permissions subscription
   useEffect(() => {
     const permissionsSubscription = permissionsStream$
-    .pipe(distinctUntilChanged())
-    .subscribe({
-      next: (permissionGranted) => { setLocationAllowed(permissionGranted) },
-      error: (permissionError) => {
-        console.error(permissionError);
-        setLocationAllowed(false);
-      },
-      complete: () => { console.log("No more permissions changes will be emitted") }
-    });
+      .pipe(distinctUntilChanged())
+      .subscribe({
+        next: (permissionGranted) => { setLocationAllowed(permissionGranted) },
+        error: (permissionError) => {
+          console.error(permissionError);
+          setLocationAllowed(false);
+        },
+        complete: () => { console.log("No more permissions changes will be emitted") }
+      });
     return () => {
       permissionsSubscription.unsubscribe();
     }
@@ -52,15 +55,15 @@ export default () => {
   useEffect(() => {
     if (locationAllowed) {
       const geolocationSubscription = geolocationStream$
-      .pipe(distinctUntilChanged())
-      .subscribe({
-        next: (position) => { setUserLocation(position.coords) },
-        error: (positionError) => {
-          console.error(positionError);
-          setUserLocation(null);
-        },
-        complete: () => { console.log("No more geolocation changes will be emitted") }
-      });
+        .pipe(distinctUntilChanged())
+        .subscribe({
+          next: (position) => { setUserLocation(position.coords) },
+          error: (positionError) => {
+            console.error(positionError);
+            setUserLocation(null);
+          },
+          complete: () => { console.log("No more geolocation changes will be emitted") }
+        });
       return () => {
         geolocationSubscription?.unsubscribe();
       }
