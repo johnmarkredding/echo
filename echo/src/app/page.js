@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationObservable, createPermissionsObservable, getEchoes, postEcho } from '../utilities';
+import { createGeolocationStream, createPermissionsStream, getEchoes, postEcho } from '../utilities';
 import { distinctUntilChanged } from 'rxjs';
 
 export default () => {
@@ -10,8 +10,8 @@ export default () => {
   const [echoInput, setEchoInput] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
-  const geolocationObservable$ = createGeolocationObservable();
-  const permissionsObservable$ = createPermissionsObservable();
+  const geolocationStream$ = createGeolocationStream();
+  const permissionsStream$ = createPermissionsStream();
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
@@ -32,7 +32,7 @@ export default () => {
 
   // Setup permissions subscription
   useEffect(() => {
-    const permissionsSubscription = permissionsObservable$
+    const permissionsSubscription = permissionsStream$
     .pipe(distinctUntilChanged())
     .subscribe({
       next: (permissionGranted) => { setLocationAllowed(permissionGranted) },
@@ -50,7 +50,7 @@ export default () => {
   // Setup geolocation subscription
   useEffect(() => {
     if (locationAllowed) {
-      const geolocationSubscription = geolocationObservable$
+      const geolocationSubscription = geolocationStream$
       .pipe(distinctUntilChanged())
       .subscribe({
         next: (position) => { setUserLocation(position.coords) },
