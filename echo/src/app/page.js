@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationStream, createPermissionsStream, getEchoes, handleNewEcho } from '../utilities';
+import { createGeolocationStream, createPermissionsStream, getEchoes, handleNewEcho } from '../helpers';
 import { distinctUntilChanged } from 'rxjs';
 
 export default () => {
