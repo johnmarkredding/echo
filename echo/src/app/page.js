@@ -71,7 +71,8 @@ export default () => {
       <h1>Echo</h1>
       {
         locationAllowed && userLocation
-        ? <>
+        ?
+          <>
             <h3>{userLocation?.latitude + ", " + userLocation?.longitude}</h3>
             <ol>
               { messages.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
@@ -81,7 +82,10 @@ export default () => {
               <input required id="echo-input" onChange={(e) => setEchoInput(e.target.value)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
             </form>
           </>
-        : <><h2>No known location.</h2><p>Be sure to allow access to location in your browser.</p></>
+        :
+          <>
+            <h2>No known location.</h2><p>Be sure to allow access to location in your browser.</p>
+          </>
       }
     </main>
   )
