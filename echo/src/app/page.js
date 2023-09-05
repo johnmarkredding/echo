@@ -66,9 +66,8 @@ export default () => {
     }
   }, [locationAllowed]);
 
-  const sendNewEcho = (e) => {
+  const sendNewEcho = (e, {latitude, longitude}) => {
     e.preventDefault();
-    const {latitude, longitude} = userLocation;
     postEcho({text: echoInput, coords: {latitude, longitude}})
       .then(console.log)
       .catch((err) => {console.error("Not possible", err)})
@@ -86,7 +85,7 @@ export default () => {
             </ol>
             <form onSubmit={sendNewEcho}>
               <label htmlFor="echo-input">your echo</label>
-              <input required id="echo-input" onChange={e => setEchoInput(e.target.value)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
+              <input required id="echo-input" onChange={e => setEchoInput(e.target.value, userLocation)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
             </form>
           </>
         : <><h2>No known location.</h2><p>Be sure to allow access to location in your browser.</p></>
