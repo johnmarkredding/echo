@@ -4,6 +4,7 @@ import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import { createGeolocationStream, createPermissionsStream, handleNewEcho } from '../helpers';
 import { distinctUntilChanged } from 'rxjs';
+const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
 export default () => {
   const [messages, setMessages] = useState([]);
@@ -18,7 +19,7 @@ export default () => {
     if (userLocation && locationAllowed) {
       const { latitude, longitude } = userLocation;
       const listenToEchoes = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`, {}
+        `${API_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`, {}
       );
       listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
       listenToEchoes.onerror = (err) => {console.error(err)};
