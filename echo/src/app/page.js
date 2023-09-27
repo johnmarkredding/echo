@@ -2,7 +2,7 @@
 'use client'
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationStream, createPermissionsStream, handleNewEcho } from '../helpers';
+import { createGeolocationStream, createPermissionsStream, handleNewEcho } from './helpers';
 import { distinctUntilChanged } from 'rxjs';
 const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
