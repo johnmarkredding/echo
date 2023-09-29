@@ -99,7 +99,7 @@ export default () => {
             <ol>
               { echoes.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
             </ol>
-            <EchoForm sendEcho={(e, echoInput, setEchoInput) => handleNewEcho(e, echoInput, userLocation, setEchoInput)} />
+            <EchoForm handler={(e, echoInput, setEchoInput) => handleNewEcho(e, echoInput, userLocation, setEchoInput)} />
           </>
         :
           <>
