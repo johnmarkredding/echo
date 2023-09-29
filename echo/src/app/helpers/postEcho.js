@@ -6,11 +6,11 @@ export default async (echo) => {
           "Content-Type": "application/json", 
           accept: "application/json"
         },
-        body: JSON.stringify({ data: echo }) // gotta write the query once the backend exists.
+        body: JSON.stringify({ data: echo })
       });
       return await response.json();
     } catch (err) {
-      console.error("Error posting echo", err);
+      console.error("Error sending echo", err);
       return null;
     }
 };
