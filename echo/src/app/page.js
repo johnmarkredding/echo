@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { distinctUntilChanged } from 'rxjs';
 import styles from './page.module.css';
-import { createGeolocationStream, createPermissionsStream, handleNewEcho } from './helpers';
+import { createGeolocationStream, createPermissionsStream, handleNewEcho, toMarker } from './helpers';
 import { GoogleMap } from './components';
 const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
 export default () => {
-  const [messages, setMessages] = useState([]);
+  const [echoes, setEchoes] = useState([]);
   const [echoInput, setEchoInput] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
@@ -26,7 +26,7 @@ export default () => {
       listenToEchoes.onerror = (err) => {console.error(err)};
       listenToEchoes.onmessage = (message) => {
         const serverMessages = JSON.parse(message?.data);
-        typeof serverMessages === 'object' ? setMessages(serverMessages) : console.log(serverMessages);
+        typeof serverMessages === 'object' ? setEchoes(serverMessages) : console.log(serverMessages);
       };
       listenToEchoes.addEventListener('close', (closeEvent) => {
         console.log("--------Server closed the connection-----------", closeEvent.data);
@@ -78,12 +78,12 @@ export default () => {
 
   return (
     <main className={styles.main}>
-      <h1>Echo</h1>
       {
         locationAllowed && userLocation
         ?
           <>
             <GoogleMap
+              markers={echoes.map(toMarker)}
               center={{
                 lat: userLocation?.latitude,
                 lng: userLocation?.longitude
@@ -98,7 +98,7 @@ export default () => {
             />
             <h3>{userLocation?.latitude + ", " + userLocation?.longitude}</h3>
             <ol>
-              { messages.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
+              { echoes.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
             </ol>
             <form onSubmit={(e) => {handleNewEcho(e, echoInput, userLocation, setEchoInput)}}>
               <label htmlFor="echo-input">your echo</label>
@@ -107,7 +107,9 @@ export default () => {
           </>
         :
           <>
-            <h2>No known location.</h2><p>Be sure to allow access to location in your browser.</p>
+            <h1>Echo</h1>
+            <h2>No known location.</h2>
+            <p>Be sure to allow access to location in your browser.</p>
           </>
       }
     </main>
