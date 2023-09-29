@@ -1,9 +1,10 @@
 'use strict'
 'use client'
-import styles from './page.module.css';
 import { useState, useEffect } from 'react';
-import { createGeolocationStream, createPermissionsStream, handleNewEcho } from './helpers';
 import { distinctUntilChanged } from 'rxjs';
+import styles from './page.module.css';
+import { createGeolocationStream, createPermissionsStream, handleNewEcho } from './helpers';
+import { GoogleMap } from './components';
 const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
 export default () => {
@@ -82,6 +83,19 @@ export default () => {
         locationAllowed && userLocation
         ?
           <>
+            <GoogleMap
+              center={{
+                lat: userLocation?.latitude,
+                lng: userLocation?.longitude
+              }}
+              mapContainerStyle={{
+                width: '100vw',
+                height: '100vh',
+                position: 'absolute',
+                top: '0',
+                left: '0'
+              }}
+            />
             <h3>{userLocation?.latitude + ", " + userLocation?.longitude}</h3>
             <ol>
               { messages.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
