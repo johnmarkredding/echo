@@ -4,12 +4,11 @@ import { useState, useEffect } from 'react';
 import { distinctUntilChanged } from 'rxjs';
 import styles from './page.module.css';
 import { createGeolocationStream, createPermissionsStream, handleNewEcho, toMarkerData } from './helpers';
-import { GoogleMap } from './components';
+import { GoogleMap, EchoForm } from './components';
 const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
 export default () => {
   const [echoes, setEchoes] = useState([]);
-  const [echoInput, setEchoInput] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
   const geolocationStream$ = createGeolocationStream();
@@ -100,10 +99,7 @@ export default () => {
             <ol>
               { echoes.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
             </ol>
-            <form onSubmit={(e) => {handleNewEcho(e, echoInput, userLocation, setEchoInput)}}>
-              <label htmlFor="echo-input">your echo</label>
-              <input required id="echo-input" onChange={(e) => setEchoInput(e.target.value)} placeholder={'There\u2019s a snake…'} type='text' value={echoInput}/>
-            </form>
+            <EchoForm sendEcho={(e, echoInput, setEchoInput) => handleNewEcho(e, echoInput, userLocation, setEchoInput)} />
           </>
         :
           <>
