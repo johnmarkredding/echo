@@ -95,10 +95,6 @@ export default () => {
                 left: '0'
               }}
             />
-            <h3>{userLocation?.latitude + ", " + userLocation?.longitude}</h3>
-            <ol>
-              { echoes.map(m => <li key={m.id}>{m.text} {m.coords?.latitude + ", " + m.coords?.longitude}</li>) }
-            </ol>
             <EchoForm handler={(e, echoInput, setEchoInput) => handleNewEcho(e, echoInput, userLocation, setEchoInput)} />
           </>
         :
