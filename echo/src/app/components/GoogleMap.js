@@ -1,7 +1,7 @@
 'use strict'
 'use client'
 import React, { memo, useCallback } from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 const NEXT_PUBLIC_GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
 const NEXT_PUBLIC_GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
@@ -43,7 +43,7 @@ export default memo(({center = null, mapContainerStyle, mapOptions, markers = []
             position={center}
             icon={"./marker.svg"}
           />
-          { markers.map(((m, i) => <Marker key={i} position={m.position} icon={"./marker.svg"} />))}
+          {...markers}
         </>
       </GoogleMap>
   ) : <></>
