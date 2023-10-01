@@ -37,12 +37,6 @@ export default memo(({center = null, mapContainerStyle, mapOptions, markers = []
       >
         { /* Child components, such as markers, info windows, etc. */ }
         <>
-          <Marker
-            title={"Your position"}
-            key={"User Location"}
-            position={center}
-            icon={"./marker.svg"}
-          />
           {...markers}
         </>
       </GoogleMap>
