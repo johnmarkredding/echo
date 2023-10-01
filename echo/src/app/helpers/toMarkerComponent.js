@@ -1,11 +1,11 @@
-import { Marker } from '@react-google-maps/api';
+import { Marker } from '../components';
 
-export default ({coords: {latitude, longitude}, id, ...rest}) => {
+export default ({coords: {latitude: lat, longitude: lng}, id, ...rest}) => {
   return (
     <Marker
       title={"Echo"}
       key={id}
-      position={{lat: latitude, lng: longitude}}
+      position={{lat, lng}}
       icon={"./marker.svg"}
       {...rest}
     />
