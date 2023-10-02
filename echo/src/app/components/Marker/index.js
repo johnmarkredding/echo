@@ -1,2 +1,3 @@
-import { Marker } from '@react-google-maps/api';
-export default Marker;
+import {AdvancedMarker} from '@vis.gl/react-google-maps';
+
+export default AdvancedMarker;
