@@ -1,6 +1,6 @@
 import {AdvancedMarker} from '@vis.gl/react-google-maps';
 
-const EchoMarker = ({position, ...otherProps}) => {
+const EchoMarker = ({position, ...otherProps}) => (
   <AdvancedMarker position={position} {...otherProps}>
     <div style={{width:"8vw"}}>
       <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 86 95">
@@ -22,6 +22,6 @@ const EchoMarker = ({position, ...otherProps}) => {
       </svg>
     </div>
   </AdvancedMarker>
-};
+);
 
 export default EchoMarker;
