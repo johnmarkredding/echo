@@ -10,8 +10,10 @@ export default function EchoMap ({children, center, ...otherProps}) {
 
   useEffect(() => {
     if (geometryIsLoaded && QUERY_RADIUS_M) {
-      const radiusM = Number(QUERY_RADIUS_M);
-      const computeOffset = google.maps.geometry.spherical.computeOffset;
+      // add margin so no UI components obscure markers.
+      const radiusM = Number(QUERY_RADIUS_M) + 100;
+      const { computeOffset } = google.maps.geometry.spherical;
+
       const north = computeOffset(center, radiusM, 0).lat();
       const south = computeOffset(center, radiusM, 180).lat();
       const east = computeOffset(center, radiusM, 90).lng();
@@ -22,12 +24,8 @@ export default function EchoMap ({children, center, ...otherProps}) {
   }, [geometryIsLoaded]);
 
   return (
-    <Map
-      center={center}
-      restriction={restriction ? restriction: undefined}
-      {...otherProps}
-    >
-      {children}
-    </Map>
+    restriction
+    ? <Map center={center} restriction={restriction} {...otherProps}>{...children}</Map>
+    : <Map center={center} {...otherProps}>{...children}</Map>
   );
 };
