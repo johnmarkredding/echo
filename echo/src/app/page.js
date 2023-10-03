@@ -1,10 +1,14 @@
 'use strict'
 'use client'
+import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import { distinctUntilChanged } from 'rxjs';
-import styles from './page.module.css';
+import { APIProvider } from '@vis.gl/react-google-maps';
 import { createGeolocationStream, createPermissionsStream, handleNewEcho, toEchoMarker } from './helpers';
-import { GoogleMap, EchoForm } from './components';
+import { EchoForm, EchoMap } from './components';
+
+const GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
+const GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
 const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
 export default () => {
@@ -81,20 +85,19 @@ export default () => {
         locationAllowed && userLocation
         ?
           <>
-            <GoogleMap
-              markers={echoes.map(toEchoMarker)}
-              center={{
-                lat: userLocation?.latitude,
-                lng: userLocation?.longitude
-              }}
-              mapContainerStyle={{
-                width: '100vw',
-                height: '100vh',
-                position: 'absolute',
-                top: '0',
-                left: '0'
-              }}
-            />
+            {/* Google Maps Wrapper */}
+            <APIProvider apiKey={GMAPS_KEY} libraries={['geometry']}>
+              <EchoMap
+                center={{
+                  lat: userLocation?.latitude,
+                  lng: userLocation?.longitude
+                }}
+                zoom={18} mapId={GMAPS_MAP_ID} disableDefaultUI={true}
+                style={{width: '100vw', height: '100vh', position: 'absolute', top: '0', left: '0'}}
+              >
+                {...echoes.map(toEchoMarker)}
+              </EchoMap>
+            </APIProvider>
             <EchoForm handler={(e, echoInput, setEchoInput) => handleNewEcho(e, echoInput, userLocation, setEchoInput)} />
           </>
         :
