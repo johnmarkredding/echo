@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { distinctUntilChanged } from 'rxjs';
 import styles from './page.module.css';
-import { createGeolocationStream, createPermissionsStream, handleNewEcho, toMarkerComponent } from './helpers';
+import { createGeolocationStream, createPermissionsStream, handleNewEcho, toEchoMarker } from './helpers';
 import { GoogleMap, EchoForm } from './components';
 const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
 
@@ -82,7 +82,7 @@ export default () => {
         ?
           <>
             <GoogleMap
-              markers={echoes.map(toMarkerComponent)}
+              markers={echoes.map(toEchoMarker)}
               center={{
                 lat: userLocation?.latitude,
                 lng: userLocation?.longitude
