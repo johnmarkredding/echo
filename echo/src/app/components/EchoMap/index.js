@@ -20,7 +20,6 @@ export default function EchoMap ({children, center, ...otherProps}) {
       const west = computeOffset(center, radiusM, -90).lng();
       setRestriction({latLngBounds: {north, south, east, west}});
     }
-    return () => {setRestriction(null)};
   }, [geometryIsLoaded]);
 
   return (
