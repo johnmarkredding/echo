@@ -9,7 +9,7 @@ import { EchoForm, EchoMap } from './components';
 
 const GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
 const GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
-const API_SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER_URL
+const ECHO_SERVER_URL = process.env.NEXT_PUBLIC_ECHO_SERVER_URL
 
 export default () => {
   const [echoes, setEchoes] = useState([]);
@@ -23,7 +23,7 @@ export default () => {
     if (userLocation && locationAllowed) {
       const { latitude, longitude } = userLocation;
       const listenToEchoes = new EventSource(
-        `${API_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`, {}
+        `${ECHO_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`, {}
       );
       listenToEchoes.onopen = () => {console.log("--------Echo listener connected-----------")};
       listenToEchoes.onerror = (err) => {console.error(err)};
@@ -85,12 +85,12 @@ export default () => {
         locationAllowed && userLocation
         ?
           <>
-            {/* Google Maps Wrapper */}
+            {/* Google Maps API Wrapper */}
             <APIProvider apiKey={GMAPS_KEY} libraries={['geometry']}>
               <EchoMap
                 center={{
-                  lat: userLocation?.latitude,
-                  lng: userLocation?.longitude
+                  lat: userLocation.latitude,
+                  lng: userLocation.longitude
                 }}
                 zoom={18} mapId={GMAPS_MAP_ID} disableDefaultUI={true}
                 style={{width: '100vw', height: '100vh', position: 'absolute', top: '0', left: '0'}}
