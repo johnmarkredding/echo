@@ -1,3 +1,4 @@
 import { createContext } from "react";
 
-export const ClustererContext = createContext(null);
+const ClustererContext = createContext(null);
+export default ClustererContext;
