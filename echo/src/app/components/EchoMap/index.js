@@ -2,6 +2,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import { Map, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { Clusterer } from '@/app/components';
 const QUERY_RADIUS_M = process.env.NEXT_PUBLIC_QUERY_RADIUS_M;
 
 export default function EchoMap ({children, center, ...otherProps}) {
@@ -24,7 +25,15 @@ export default function EchoMap ({children, center, ...otherProps}) {
 
   return (
     restriction
-    ? <Map center={center} restriction={restriction} {...otherProps}>{...children}</Map>
-    : <Map center={center} {...otherProps}>{...children}</Map>
+    ? <Map center={center} restriction={restriction} {...otherProps}>
+        <Clusterer>
+          {...children}
+        </Clusterer>
+      </Map>
+    : <Map center={center} {...otherProps}>
+        <Clusterer>
+          {...children}
+        </Clusterer>
+      </Map>
   );
 };
