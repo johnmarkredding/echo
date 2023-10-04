@@ -4,8 +4,8 @@ import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import { distinctUntilChanged } from 'rxjs';
 import { APIProvider } from '@vis.gl/react-google-maps';
-import { createGeolocationStream, createPermissionsStream, handleNewEcho, toEchoMarker } from './helpers';
-import { EchoForm, EchoMap } from './components';
+import { createGeolocationStream, createPermissionsStream, handleNewEcho, toEchoMarker } from '@/app/helpers';
+import { EchoForm, EchoMap } from '@/app/components';
 
 const GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
 const GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
