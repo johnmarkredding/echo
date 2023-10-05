@@ -60,11 +60,14 @@ const addMarkers = (map, data, listenerCallback) => {
 };
 
 const generateRestriction = (center, setRestriction) => {
-  if (!google.maps.geometry && QUERY_RADIUS_M) {
-    throw Error("Geometry library missing. Add 'geometry' to the libraries array of the Google Maps 'Provider' component.")
-  } else {
-    // add margin so no UI components obscure markers.
-    const radiusM = Number(QUERY_RADIUS_M) + 100;
+  if (!google.maps.geometry) {
+    if (QUERY_RADIUS_M) {
+      throw Error("Geometry library missing. Add 'geometry' to the libraries array of the Google Maps 'Provider' component.");
+    } else {
+      throw Error("ENV variable value for 'QUERY_RADIUS_M' is missing");
+    }
+  } else if (QUERY_RADIUS_M) {
+    const radiusM = Number(QUERY_RADIUS_M) + 100; // add margin so no UI components obscure markers.
     const { computeOffset } = google.maps.geometry.spherical;
     
     setRestriction({
@@ -76,7 +79,7 @@ const generateRestriction = (center, setRestriction) => {
       }
     });
   }
-}
+};
 
 const generateMarkerIcon = () => {
   const markerContent = document.createElement('div');
