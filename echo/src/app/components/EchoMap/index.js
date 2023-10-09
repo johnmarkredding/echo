@@ -25,12 +25,15 @@ const EchoMap = ({center, echoes}) => {
     [center]
   );
   const onLoadMap = useCallback(
-    (map) => addMarkers(map, echoes, setModalData),
+    (map) => {
+      map.addListener('click', () => setModalData(null));
+      addMarkers(map, echoes, setModalData);
+    },
     [echoes]
   );
 
   return (
-    <article onClick={() => setModalData(null)}>
+    <>
       <APIProvider
         apiKey={GMAPS_KEY}
         libraries={['geometry', 'marker']}
@@ -47,7 +50,7 @@ const EchoMap = ({center, echoes}) => {
         />
       </APIProvider>
       <EchoModal echoes={modalData} />
-    </article>
+    </>
   );
 };
 
@@ -66,7 +69,7 @@ const addMarkers = (map, data, listenerCallback) => {
     });
     marker.echo = echo;
     marker.addListener('click', (e) => {
-      e.domEvent.cancelBubble = true;
+      e.stop();
       listenerCallback([echo]);
     });
     return marker;
@@ -75,7 +78,7 @@ const addMarkers = (map, data, listenerCallback) => {
   new MarkerClusterer({
     algorithm: new SuperClusterAlgorithm({maxZoom: 22, radius: 60}),
     onClusterClick: (e, cluster) => {
-      e.domEvent.cancelBubble = true;
+      e.stop();
       listenerCallback(cluster.markers.map((m) => m.echo));
     },
     markers,
