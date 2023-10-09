@@ -3,6 +3,7 @@
 import {useState, useCallback} from 'react';
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
 import {MarkerClusterer, SuperClusterAlgorithm} from '@googlemaps/markerclusterer';
+import {EchoModal} from '@/app/components';
 const QUERY_RADIUS_M = process.env.NEXT_PUBLIC_QUERY_RADIUS_M;
 const GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
 const GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
@@ -45,30 +46,7 @@ const EchoMap = ({center, echoes}) => {
           style={mapStyle}
         />
       </APIProvider>
-      {
-        modalData
-          ? (<section onClick={(e) => e.stopPropagation()}
-            style={{
-              overflow: 'scroll',
-              maxHeight: '50vh',
-              backgroundColor: '#1C1C1C',
-              width: '55vw',
-              justifySelf: 'center',
-              zIndex: 2999999,
-              position: 'fixed',
-              top: 'calc(50% - 3.5rem)',
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            {
-              Array.isArray(modalData)
-                ? modalData.map((e) => <p key={e.id}>{e.text}</p>)
-                : <p>{modalData.text}</p>
-            }
-          </section>)
-          : null
-      }
+      <EchoModal echoes={modalData} />
     </article>
   );
 };
@@ -89,7 +67,7 @@ const addMarkers = (map, data, listenerCallback) => {
     marker.echo = echo;
     marker.addListener('click', (e) => {
       e.domEvent.cancelBubble = true;
-      listenerCallback(echo);
+      listenerCallback([echo]);
     });
     return marker;
   });
