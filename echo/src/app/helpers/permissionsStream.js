@@ -1,11 +1,11 @@
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
 const setupPermissionsChangeHandler = (sendToSubscriber) => (permissionStatus) => {
-  const checkPermissionGranted = (permissionIs) => (permissionIs === "granted" || permissionIs === "prompt");
+  const checkPermissionGranted = (permissionIs) => (permissionIs === 'granted' || permissionIs === 'prompt');
   sendToSubscriber(checkPermissionGranted(permissionStatus.state));
   permissionStatus.onchange = (permissionsEvent) => {
     sendToSubscriber(checkPermissionGranted(permissionsEvent.target.state));
-  }
+  };
   
   return () => {
     permissionStatus.onchange = null; // Remove the handler when unsubscribed
@@ -13,12 +13,11 @@ const setupPermissionsChangeHandler = (sendToSubscriber) => (permissionStatus) =
 };
 
 export default () => {
-  return new Observable(subscriber => {
-    
+  return new Observable((subscriber) => {
     const handlePermissionsChange = setupPermissionsChangeHandler((status) => subscriber.next(status));
-
-    navigator.permissions.query({ name: 'geolocation' })
-    .then(handlePermissionsChange)
-    .catch((permissionsQueryError) => { subscriber.error(permissionsQueryError) });
+    
+    navigator.permissions.query({name: 'geolocation'})
+      .then(handlePermissionsChange)
+      .catch((permissionsQueryError) => { subscriber.error(permissionsQueryError) });
   });
 };

@@ -1,6 +1,7 @@
-'use strict'
+'use strict';
 import styles from './styles.module.scss';
-export default ({echoes, ...rest }) => {
+
+const EchoModal = ({echoes, ...rest}) => {
   return echoes?.length > 0
     ? (
       <article {...rest} className={styles.modal} id="echo-modal" onClick={(e) => e.stopPropagation()}>
@@ -9,3 +10,5 @@ export default ({echoes, ...rest }) => {
     )
     : null;
 };
+
+export default EchoModal;

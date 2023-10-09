@@ -1,3 +1,4 @@
+/*global google*/
 'use strict';
 'use client';
 import {useState, useCallback} from 'react';
@@ -58,8 +59,7 @@ const addMarkers = (map, data, listenerCallback) => {
   const markers = data.map((echo) => {
     const {
       coords: {latitude: lat, longitude: lng},
-      id,
-      text
+      id
     } = echo;
     const marker = new google.maps.marker.AdvancedMarkerElement({
       title: 'Echo ' + id,
