@@ -11,13 +11,15 @@
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.5.0",
     "@vis.gl/react-google-maps": "^0.0.4",
-    "next": "13.4.13",
+    "next": "13.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "eslint": "^8.51.0",
+    "eslint-plugin-react": "^7.33.2",
     "sass": "^1.68.0"
   }
 }
