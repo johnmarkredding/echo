@@ -20,43 +20,57 @@ const mapStyle = {
 
 const EchoMap = ({center, echoes}) => {
   const [restriction, setRestriction] = useState(null);
-  const [echoModal, setEchoModal] = useState(null);
-
-  useEffect(() => {
-    if (echoModal) {
-      alert(echoModal.text);
-      setEchoModal(null);
-    }
-    return () => {
-      setEchoModal(null);
-    };
-  }, [echoModal]);
+  const [modalData, setModalData] = useState(null);
 
   const onLoadApi = useCallback(
     () => generateRestriction(center, setRestriction),
     [center]
   );
   const onLoadMap = useCallback(
-    (map) => addMarkers(map, echoes, setEchoModal),
+    (map) => addMarkers(map, echoes, setModalData),
     [echoes]
   );
 
   return (
-    <APIProvider
-      apiKey={GMAPS_KEY}
-      libraries={['geometry', 'marker']}
-      onLoad={onLoadApi}
-    >
-      <Map
-        center={center}
-        restriction={restriction || undefined}
-        onLoadMap={onLoadMap}
-        mapId={GMAPS_MAP_ID}
-        zoom={18}
-        disableDefaultUI={true}
-        style={mapStyle}
-      />
-    </APIProvider>
+    <>
+      <APIProvider
+        apiKey={GMAPS_KEY}
+        libraries={['geometry', 'marker']}
+        onLoad={onLoadApi}
+      >
+        <Map
+          center={center}
+          restriction={restriction || undefined}
+          onLoadMap={onLoadMap}
+          mapId={GMAPS_MAP_ID}
+          zoom={18}
+          disableDefaultUI={true}
+          style={mapStyle}
+        />
+      </APIProvider>
+      {modalData ? (
+        <section
+          style={{
+            overflow: 'scroll',
+            maxHeight: '50vh',
+            backgroundColor: '#1C1C1C',
+            width: '55vw',
+            justifySelf: 'center',
+            zIndex: 2999999,
+            position: 'fixed',
+            top: 'calc(50% - 3.5rem)',
+            left: '50%',
+            transform: 'translate(-50%, -50%)'
+          }}
+        >
+          {Array.isArray(modalData) ? (
+            modalData.map((e) => <p key={e.id}>{e.text}</p>)
+          ) : (
+            <p>{modalData.text}</p>
+          )}
+        </section>
+      ) : null}
+    </>
   );
 };
 
@@ -64,7 +78,8 @@ const addMarkers = (map, data, listenerCallback) => {
   const markers = data.map((echo) => {
     const {
       coords: {latitude: lat, longitude: lng},
-      id
+      id,
+      text
     } = echo;
     const marker = new google.maps.marker.AdvancedMarkerElement({
       title: 'Echo ' + id,
@@ -72,12 +87,16 @@ const addMarkers = (map, data, listenerCallback) => {
       position: {lat, lng},
       content: generateMarkerIcon()
     });
+    marker.echo = echo;
     marker.addListener('click', () => listenerCallback(echo));
     return marker;
   });
 
-  const echoClusterer = new MarkerClusterer({
+  new MarkerClusterer({
     algorithm: new SuperClusterAlgorithm({maxZoom: 22, radius: 60}),
+    onClusterClick: (_, cluster) => {
+      listenerCallback(cluster.markers.map((m) => m.echo));
+    },
     markers,
     map
   });
