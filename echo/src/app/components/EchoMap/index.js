@@ -48,28 +48,30 @@ const EchoMap = ({center, echoes}) => {
           style={mapStyle}
         />
       </APIProvider>
-      {modalData ? (
-        <section
-          style={{
-            overflow: 'scroll',
-            maxHeight: '50vh',
-            backgroundColor: '#1C1C1C',
-            width: '55vw',
-            justifySelf: 'center',
-            zIndex: 2999999,
-            position: 'fixed',
-            top: 'calc(50% - 3.5rem)',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-          }}
-        >
-          {Array.isArray(modalData) ? (
-            modalData.map((e) => <p key={e.id}>{e.text}</p>)
-          ) : (
-            <p>{modalData.text}</p>
-          )}
-        </section>
-      ) : null}
+      {
+        modalData
+        ? (<section
+            style={{
+              overflow: 'scroll',
+              maxHeight: '50vh',
+              backgroundColor: '#1C1C1C',
+              width: '55vw',
+              justifySelf: 'center',
+              zIndex: 2999999,
+              position: 'fixed',
+              top: 'calc(50% - 3.5rem)',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
+            }}
+          >
+            {
+              Array.isArray(modalData)
+              ? modalData.map((e) => <p key={e.id}>{e.text}</p>)
+              : <p>{modalData.text}</p>
+            }
+          </section>)
+        : null
+      }
     </>
   );
 };
