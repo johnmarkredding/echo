@@ -1,11 +1,8 @@
 'use strict';
 'use client';
-import {useState, useCallback, useEffect} from 'react';
+import {useState, useCallback} from 'react';
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
-import {
-  MarkerClusterer,
-  SuperClusterAlgorithm
-} from '@googlemaps/markerclusterer';
+import {MarkerClusterer, SuperClusterAlgorithm} from '@googlemaps/markerclusterer';
 const QUERY_RADIUS_M = process.env.NEXT_PUBLIC_QUERY_RADIUS_M;
 const GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
 const GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
@@ -32,7 +29,7 @@ const EchoMap = ({center, echoes}) => {
   );
 
   return (
-    <>
+    <article onClick={() => setModalData(null)}>
       <APIProvider
         apiKey={GMAPS_KEY}
         libraries={['geometry', 'marker']}
@@ -50,7 +47,7 @@ const EchoMap = ({center, echoes}) => {
       </APIProvider>
       {
         modalData
-        ? (<section
+          ? (<section onClick={(e) => e.stopPropagation()}
             style={{
               overflow: 'scroll',
               maxHeight: '50vh',
@@ -66,13 +63,13 @@ const EchoMap = ({center, echoes}) => {
           >
             {
               Array.isArray(modalData)
-              ? modalData.map((e) => <p key={e.id}>{e.text}</p>)
-              : <p>{modalData.text}</p>
+                ? modalData.map((e) => <p key={e.id}>{e.text}</p>)
+                : <p>{modalData.text}</p>
             }
           </section>)
-        : null
+          : null
       }
-    </>
+    </article>
   );
 };
 
@@ -90,13 +87,17 @@ const addMarkers = (map, data, listenerCallback) => {
       content: generateMarkerIcon()
     });
     marker.echo = echo;
-    marker.addListener('click', () => listenerCallback(echo));
+    marker.addListener('click', (e) => {
+      e.domEvent.cancelBubble = true;
+      listenerCallback(echo);
+    });
     return marker;
   });
 
   new MarkerClusterer({
     algorithm: new SuperClusterAlgorithm({maxZoom: 22, radius: 60}),
-    onClusterClick: (_, cluster) => {
+    onClusterClick: (e, cluster) => {
+      e.domEvent.cancelBubble = true;
       listenerCallback(cluster.markers.map((m) => m.echo));
     },
     markers,
