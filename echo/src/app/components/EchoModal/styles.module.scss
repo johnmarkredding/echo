@@ -2,11 +2,55 @@
   overflow: scroll;
   max-height: 50vh;
   background-color: #1C1C1C;
-  width: 55vw;
+  width: 95vw;
+  max-width: 450px;
   justify-self: center;
   z-index: 2999999;
   position: fixed;
-  top: calc(50% - 3.5rem);
+  top: calc(50% - 3rem);
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 1rem;
+  background-color: rgba($color: #1C1C1C, $alpha: 0.95);
+  border-radius: 6px;
+  display: grid;
+  gap: 0.6rem;
+
+  & > div {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 0.75rem;
+
+    &:not(:first-of-type) {
+      margin-top: 0.5rem;
+    }
+
+    &:not(:last-of-type)::after {
+      content: '';
+      grid-column: 2 / -2;
+      display: block;
+      height: 1px;
+      background-color: #323232;
+    }
+
+    p {
+      line-height: 1.65;
+      grid-column: 1 / -1;
+    }
+
+    span {
+      font-size: 0.6rem;
+      color: #848484;
+
+      &:first-of-type {
+        grid-column: span 3;
+      }
+
+      &:last-of-type {
+        text-align: end;
+        grid-column: span 3;
+      }
+    }
+  }
 }
