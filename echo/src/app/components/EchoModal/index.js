@@ -11,12 +11,21 @@ const EchoModal = ({echoes, ...rest}) => {
     : null;
 };
 
-const EchoBlock = ({text, coords: {longitude, latitude}, timestamp}) => (
-  <div>
-    <p>{text}</p>
-    <span>{latitude.toFixed(6) + ', ' + longitude.toFixed(6)}</span>
-    <span>{Math.trunc((Date.now() - Date.parse(timestamp))/60000)}min ago</span>
-  </div>
-);
+const EchoBlock = ({text, coords: {longitude, latitude}, timestamp}) => {
+  const minAgo = Math.trunc((Date.now() - Date.parse(timestamp))/60000);
+  return (
+    <div>
+      <p>{text}</p>
+      <span>{latitude.toFixed(6) + ', ' + longitude.toFixed(6)}</span>
+      <span>
+        {
+          minAgo
+            ? minAgo + 'min ago'
+            : 'now'
+        }
+      </span>
+    </div>
+  );
+};
 
 export default EchoModal;
