@@ -3,27 +3,36 @@
 import styles from './page.module.css';
 import {useState, useEffect} from 'react';
 import {distinctUntilChanged} from 'rxjs';
-import {createGeolocationStream, createPermissionsStream, handleNewEcho} from '@/app/helpers';
+import {
+  createGeolocationStream,
+  createPermissionsStream,
+  handleNewEcho,
+} from '@/app/helpers';
 import {EchoForm, EchoMap} from '@/app/components';
 
 const ECHO_SERVER_URL = process.env.NEXT_PUBLIC_ECHO_SERVER_URL;
+const geolocationStream$ = createGeolocationStream();
+const permissionsStream$ = createPermissionsStream();
 
 export default () => {
   const [echoes, setEchoes] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
-  const geolocationStream$ = createGeolocationStream();
-  const permissionsStream$ = createPermissionsStream();
 
   // Get messages on userLocation change. This is a side effect.
   useEffect(() => {
     if (userLocation && locationAllowed) {
       const {latitude, longitude} = userLocation;
       const listenToEchoes = new EventSource(
-        `${ECHO_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`, {}
+        `${ECHO_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`,
+        {}
       );
-      listenToEchoes.onopen = () => {console.log('--------Echo listener connected-----------')};
-      listenToEchoes.onerror = (err) => {console.error(err)};
+      listenToEchoes.onopen = () => {
+        console.log('--------Echo listener connected-----------');
+      };
+      listenToEchoes.onerror = (err) => {
+        console.error(err);
+      };
       listenToEchoes.onmessage = (message) => {
         const serverMessages = JSON.parse(message?.data);
         typeof serverMessages === 'object'
@@ -31,10 +40,13 @@ export default () => {
           : console.log(serverMessages);
       };
       listenToEchoes.addEventListener('close', (closeEvent) => {
-        console.log('--------Server closed the connection-----------', closeEvent.data);
+        console.log(
+          '--------Server closed the connection-----------',
+          closeEvent.data
+        );
         listenToEchoes.close();
       });
-  
+
       return () => {
         listenToEchoes.close();
         console.log('--------Echo listener disconnected-----------');
@@ -47,12 +59,16 @@ export default () => {
     const permissionsSubscription = permissionsStream$
       .pipe(distinctUntilChanged())
       .subscribe({
-        next: (permissionGranted) => { setLocationAllowed(permissionGranted) },
+        next: (permissionGranted) => {
+          setLocationAllowed(permissionGranted);
+        },
         error: (permissionError) => {
           console.error(permissionError);
           setLocationAllowed(false);
         },
-        complete: () => { console.log('No more permissions changes will be emitted') }
+        complete: () => {
+          console.log('No more permissions changes will be emitted');
+        },
       });
     return () => {
       permissionsSubscription.unsubscribe();
@@ -65,39 +81,49 @@ export default () => {
       const geolocationSubscription = geolocationStream$
         .pipe(distinctUntilChanged())
         .subscribe({
-          next: (position) => { setUserLocation(position.coords) },
+          next: (position) => {
+            setUserLocation(position.coords);
+          },
           error: (positionError) => {
             console.error(positionError);
             setUserLocation(null);
           },
-          complete: () => { console.log('No more geolocation changes will be emitted') }
+          complete: () => {
+            console.log('No more geolocation changes will be emitted');
+          },
         });
       return () => {
         geolocationSubscription?.unsubscribe();
       };
     }
-  }, [locationAllowed, geolocationStream$]);
+  }, [locationAllowed]);
 
   return (
     <main className={styles.main}>
-      {
-        locationAllowed && userLocation
-          ?          <>
+      {locationAllowed && userLocation
+        ? (
+          <>
             <EchoMap
               center={{
                 lat: userLocation.latitude,
-                lng: userLocation.longitude
+                lng: userLocation.longitude,
               }}
               echoes={echoes}
             />
-            <EchoForm handler={(e, echoInput, setEchoInput) => handleNewEcho(e, echoInput, userLocation, setEchoInput)} />
+            <EchoForm
+              handler={(e, echoInput, setEchoInput) =>
+                handleNewEcho(e, echoInput, userLocation, setEchoInput)
+              }
+            />
           </>
-          :          <>
+        )
+        : (
+          <>
             <h1>Echo</h1>
             <h2>No known location.</h2>
             <p>Be sure to allow access to location in your browser.</p>
           </>
-      }
+        )}
     </main>
   );
 };
