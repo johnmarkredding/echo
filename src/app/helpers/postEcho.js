@@ -1,6 +1,6 @@
 export default async (echo) => {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_SERVER_URL + '/echo', {
+    const response = await fetch(process.env.NEXT_PUBLIC_ECHO_SERVER_URL + '/echo', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json', 
