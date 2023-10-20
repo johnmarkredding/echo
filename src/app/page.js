@@ -11,6 +11,7 @@ import {
 import {EchoForm, EchoMap} from '@/app/components';
 
 const ECHO_SERVER_URL = process.env.NEXT_PUBLIC_ECHO_SERVER_URL;
+const QUERY_RADIUS_M = process.env.NEXT_PUBLIC_QUERY_RADIUS_M;
 const geolocationStream$ = createGeolocationStream();
 const permissionsStream$ = createPermissionsStream();
 
@@ -24,7 +25,7 @@ export default () => {
     if (userLocation && locationAllowed) {
       const {latitude, longitude} = userLocation;
       const listenToEchoes = new EventSource(
-        `${ECHO_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}`,
+        `${ECHO_SERVER_URL}/echoes?latitude=${latitude}&longitude=${longitude}&radius=${QUERY_RADIUS_M}`,
         {}
       );
       listenToEchoes.onopen = () => {

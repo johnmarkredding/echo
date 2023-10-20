@@ -77,7 +77,6 @@ const addMarkers = (map, data, listenerCallback) => {
 
   const renderer = {
     render: (cluster, stats, map) => {
-      console.log('HEHEHE');
       // change color if this cluster has more markers than the mean cluster
       const color = cluster.count > Math.max(10, stats.clusters.markers.mean)
         ? '#444'
