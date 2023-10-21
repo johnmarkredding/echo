@@ -18,6 +18,8 @@
 # misc
 .DS_Store
 *.pem
+*.crt
+*.key
 
 # local env files
 .env*.local
