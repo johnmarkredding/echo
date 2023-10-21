@@ -2,7 +2,6 @@
 'use client';
 import styles from './page.module.css';
 import {useState, useEffect} from 'react';
-import {distinctUntilChanged} from 'rxjs';
 import {
   createGeolocationStream,
   createPermissionsStream,
@@ -58,7 +57,6 @@ export default () => {
   // Setup permissions subscription
   useEffect(() => {
     const permissionsSubscription = permissionsStream$
-      .pipe(distinctUntilChanged())
       .subscribe({
         next: (permissionGranted) => {
           setLocationAllowed(permissionGranted);
@@ -80,10 +78,9 @@ export default () => {
   useEffect(() => {
     if (locationAllowed) {
       const geolocationSubscription = geolocationStream$
-        .pipe(distinctUntilChanged())
         .subscribe({
-          next: (position) => {
-            setUserLocation(position.coords);
+          next: (coords) => {
+            setUserLocation(coords);
           },
           error: (positionError) => {
             console.error(positionError);

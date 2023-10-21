@@ -1,11 +1,11 @@
-import {Observable} from 'rxjs';
+import {Observable, distinctUntilChanged} from 'rxjs';
 
 export default (geoOptions = {enableHighAccuracy: true}) => {
   return new Observable((subscriber) => {
     let watchId = null;
     try {
       watchId = navigator.geolocation.watchPosition(
-        (nextPosition) => {subscriber.next(nextPosition)},
+        ({coords}) => {subscriber.next(coords)},
         (positionError) => {subscriber.error(positionError)},
         geoOptions
       );
@@ -19,5 +19,5 @@ export default (geoOptions = {enableHighAccuracy: true}) => {
         console.error(err);
       }
     };
-  });
+  }).pipe(distinctUntilChanged());
 };

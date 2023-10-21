@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {Observable, distinctUntilChanged} from 'rxjs';
 
 const setupPermissionsChangeHandler = (sendToSubscriber) => (permissionStatus) => {
   const checkPermissionGranted = (permissionIs) => (permissionIs === 'granted' || permissionIs === 'prompt');
@@ -19,5 +19,5 @@ export default () => {
     navigator.permissions.query({name: 'geolocation'})
       .then(handlePermissionsChange)
       .catch((permissionsQueryError) => { subscriber.error(permissionsQueryError) });
-  });
+  }).pipe(distinctUntilChanged());
 };
