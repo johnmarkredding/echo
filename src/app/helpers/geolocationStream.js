@@ -2,10 +2,10 @@ import {Observable, distinctUntilChanged} from 'rxjs';
 
 export default (geoOptions = {enableHighAccuracy: true}) => {
   return new Observable((subscriber) => {
-    let watchId = null;
+    let geoWatcher = null;
     try {
-      watchId = navigator.geolocation.watchPosition(
-        ({coords}) => {subscriber.next(coords)},
+      geoWatcher = navigator.geolocation.watchPosition(
+        ({coords:{longitude, latitude}}) => {subscriber.next({longitude, latitude})},
         (positionError) => {subscriber.error(positionError)},
         geoOptions
       );
@@ -14,10 +14,15 @@ export default (geoOptions = {enableHighAccuracy: true}) => {
     }
     return () => {
       try {
-        navigator.geolocation.clearWatch(watchId);
+        navigator.geolocation.clearWatch(geoWatcher);
       } catch (err) {
         console.error(err);
       }
     };
-  }).pipe(distinctUntilChanged());
+  })
+    .pipe(
+      distinctUntilChanged(({prevLat, prevLong}, {currLat, currLong}) => {
+        return prevLat == currLat && prevLong == currLong;
+      })
+    );
 };
