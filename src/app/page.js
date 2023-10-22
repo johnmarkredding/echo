@@ -19,7 +19,7 @@ export default () => {
   const [userLocation, setUserLocation] = useState(null);
   const [locationAllowed, setLocationAllowed] = useState(false);
 
-  // Get messages on userLocation change. This is a side effect.
+  // Get echoes on userLocation change
   useEffect(() => {
     if (userLocation && locationAllowed) {
       const {latitude, longitude} = userLocation;
