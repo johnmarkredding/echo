@@ -23,7 +23,9 @@ export default (geoOptions = {enableHighAccuracy: true}) => {
     .pipe(
       distinctUntilChanged(
         (prev, curr) => {
-          return prev.latitude == curr.latitude && prev.longitude == curr.longitude;
+          const latsEqual = prev.latitude.toFixed(5) == curr.latitude.toFixed(5);
+          const lonsEqual = prev.longitude.toFixed(5) == curr.longitude.toFixed(5);
+          return latsEqual && lonsEqual;
         }
       )
     );
