@@ -23,9 +23,10 @@ export default (geoOptions = {enableHighAccuracy: true}) => {
     .pipe(
       distinctUntilChanged(
         (prev, curr) => {
-          const latsEqual = prev.latitude.toFixed(5) == curr.latitude.toFixed(5);
-          const lonsEqual = prev.longitude.toFixed(5) == curr.longitude.toFixed(5);
-          return latsEqual && lonsEqual;
+          const tolerance = 0.00005; // Calculated to roughly 5.55m of accuracy
+          const latDiff = Math.abs(prev.latitude - curr.latitude);
+          const lngDiff = Math.abs(prev.longitude - curr.longitude);
+          return latDiff <= tolerance && lngDiff <= tolerance;
         }
       )
     );
