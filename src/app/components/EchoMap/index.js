@@ -16,19 +16,25 @@ const mapStyle = {
 
 const EchoMap = ({center, echoes}) => {
   const [restriction, setRestriction] = useState(null);
+  const [loadedAPI, setLoadedAPI] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
   
   useEffect(() => {
     if (mapInstance) {
-      return addMarkers(mapInstance, echoes, setModalData);
+      const cleanupMarkers = addMarkers(mapInstance, echoes, setModalData);
+      return cleanupMarkers;
     }
   }, [echoes, mapInstance]);
 
-  const onLoadApi = useCallback(
-    () => generateMapRestriction(center, setRestriction),
-    [center]
-  );
+  useEffect(() => {
+    if (loadedAPI) {
+      generateMapRestriction(center, setRestriction);
+    } else {console.log('no loaded API')}
+    return () => {setRestriction(null)};
+  }, [center, loadedAPI]);
+  
+  const onLoadApi = () => setLoadedAPI(true);
   const onLoadMap = useCallback(
     (map) => {
       setMapInstance(map);
