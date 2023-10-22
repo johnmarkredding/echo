@@ -21,8 +21,10 @@ export default (geoOptions = {enableHighAccuracy: true}) => {
     };
   })
     .pipe(
-      distinctUntilChanged(({prevLat, prevLong}, {currLat, currLong}) => {
-        return prevLat == currLat && prevLong == currLong;
-      })
+      distinctUntilChanged(
+        (prev, curr) => {
+          return prev.latitude == curr.latitude && prev.longitude == curr.longitude;
+        }
+      )
     );
 };
