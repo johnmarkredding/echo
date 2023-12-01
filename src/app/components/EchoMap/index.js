@@ -29,7 +29,7 @@ const EchoMap = ({center, echoes}) => {
 
   useEffect(() => {
     if (loadedAPI) {
-      generateMapRestriction(center, setRestriction);
+      setRestriction(generateMapRestriction(center));
     } else {console.log('no loaded API')}
     return () => {setRestriction(null)};
   }, [center, loadedAPI]);
