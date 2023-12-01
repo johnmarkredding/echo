@@ -1,7 +1,7 @@
 'use strict';
 
-const getSvg = (color) => `
-  <svg fill="${color}" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+const svg = `
+  <svg fill="rgba(0, 0, 0, 0.80)" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
     <circle cx="120" cy="120" opacity=".6" r="70" />
     <circle cx="120" cy="120" opacity=".3" r="90" />
     <circle cx="120" cy="120" opacity=".2" r="110" />
@@ -21,9 +21,9 @@ const getLabel = (text) => `
     ${text}
   </div>`;
 
-const generateClusterIcon = (svgColor, markerCount) => {
+const generateClusterIcon = (markerCount) => {
   const markerContent = document.createElement('div');
-  markerContent.innerHTML = getSvg(svgColor) + getLabel(markerCount);
+  markerContent.innerHTML = svg + getLabel(markerCount);
   return markerContent;
 };
 
