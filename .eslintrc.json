@@ -28,6 +28,6 @@
     "object-curly-spacing": ["error", "never", {"objectsInObjects": false}],
     "linebreak-style": ["error", "unix"],
     "semi": ["error", "always", {"omitLastInOneLineBlock": true}],
-    "eol-last": ["error", "never"]
-  }
+    "eol-last": ["error", "never"],
+    "no-unused-vars": ["error", { "varsIgnorePattern": "_" }]  }
 }
