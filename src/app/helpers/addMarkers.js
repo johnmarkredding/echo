@@ -3,8 +3,10 @@
 import {MarkerClusterer, SuperClusterAlgorithm} from '@googlemaps/markerclusterer';
 import {generateMarkerIcon, generateClusterIcon} from '@/app/helpers';
 
+const superClusterAlgorithm = new SuperClusterAlgorithm({maxZoom: 22, radius: 60});
+
 const renderer = {
-  render: (cluster, stats, map) => {
+  render: (cluster, _, map) => {
 
     return new google.maps.marker.AdvancedMarkerElement({
       position: cluster.position,
@@ -36,7 +38,7 @@ const addMarkers = (map, data, listenerCallback) => {
   const markers = data.map((echo) => addMarker(map, echo, listenerCallback));
 
   const markerClusterer = new MarkerClusterer({
-    algorithm: new SuperClusterAlgorithm({maxZoom: 22, radius: 60}),
+    algorithm: superClusterAlgorithm,
     onClusterClick: (e, cluster) => {
       e.stop();
       listenerCallback(cluster.markers.map((m) => m.echo));
