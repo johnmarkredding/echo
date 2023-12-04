@@ -29,5 +29,5 @@
     "linebreak-style": ["error", "unix"],
     "semi": ["error", "always", {"omitLastInOneLineBlock": true}],
     "eol-last": ["error", "never"],
-    "no-unused-vars": ["error", { "varsIgnorePattern": "_" }]  }
+    "no-unused-vars": ["error", { "varsIgnorePattern": "_", "argsIgnorePattern": "_" }]  }
 }
