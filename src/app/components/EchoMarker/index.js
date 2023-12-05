@@ -1,32 +1,33 @@
 /*global google*/
 'use strict';
 'use client';
-import {useState, memo, useEffect, useEventEffect} from 'react';
+import {memo, useEffect, useContext} from 'react';
 import {generateMarkerIcon} from '@/app/helpers';
+import {ClustererContext} from '@/app/contexts';
 
 const EchoMarker = memo(({echo, onClick}) => {
-  const [marker, setMarker] = useState(null);
-  const markerClickListener = useEventEffect((e) => {
-    e.stop();
-    onClick([echo]);
-  });
+  const clusterer = useContext(ClustererContext);
 
   useEffect(() => {
-    const {coords: {latitude: lat, longitude: lng}, id} = echo;
-    const echoMarker = new google.maps.marker.AdvancedMarkerElement({
-      title: 'Echo ' + id,
-      position: {lat, lng},
+    const newMarker = new google.maps.marker.AdvancedMarkerElement({
+      title: 'Echo ' + echo.id,
+      position: {lat: echo.coords.latitude, lng: echo.coords.longitude},
       content: generateMarkerIcon()
     });
-    echoMarker.echo = echo;
-    echoMarker.addListener('click', markerClickListener);
-    setMarker(echoMarker);
+    newMarker.echo = echo;
+
+    const markerClickListener = newMarker.addListener('click', (e) => {
+      e.stop();
+      onClick([echo]);
+    });
+
+    clusterer.add(newMarker, newMarker.echo.id);
+
     return () => {
-      marker.removeListener('click', markerClickListener);
-      marker.map = null;
-      setMarker(null);
+      markerClickListener.remove();
+      clusterer.remove(newMarker.echo.id);
     };
-  }, [echo, marker, markerClickListener]);
+  }, [echo, onClick, clusterer]);
   
   return (<></>);
 }, (prevProps, nextProps) => prevProps.echo.id === nextProps.echo.id);
