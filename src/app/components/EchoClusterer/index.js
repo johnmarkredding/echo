@@ -4,6 +4,7 @@ import {useState, useEffect, useRef} from 'react';
 import {useMap} from '@vis.gl/react-google-maps';
 import {MarkerClusterer, SuperClusterAlgorithm} from '@googlemaps/markerclusterer';
 import {generateClusterIcon} from '@/app/helpers';
+import {ClustererContext} from '@/app/contexts';
 
 const clusterAlgorithm = new SuperClusterAlgorithm({maxZoom: 22, radius: 60});
 
@@ -20,16 +21,16 @@ const renderer = {
 };
 
 const EchoClusterer = ({onClick, children}) => {
-  const [markerRefs, setMarkerRefs] = useState({});
+  const [markerCacheRef, setMarkerCacheRef] = useState({});
   const clusterer = useRef(null);
   const map = useMap();
-  
+
   useEffect(() => {
     if (!map) return;
     if (!clusterer.current) {
       clusterer.current = new MarkerClusterer({
         algorithm: clusterAlgorithm,
-        markers: Object.values(markerRefs),
+        markers: Object.values(markerCacheRef),
         map,
         renderer,
         onClusterClick: (e, cluster) => {
@@ -38,31 +39,33 @@ const EchoClusterer = ({onClick, children}) => {
         }
       });
     }
-  }, [map, markerRefs, onClick]);
+  }, [map, markerCacheRef, onClick]);
   
   useEffect(() => {
     clusterer.current?.clearMarkers();
-    clusterer.current?.addMarkers(Object.values(markerRefs));
-  }, [markerRefs]);
+    clusterer.current?.addMarkers(Object.values(markerCacheRef));
+  }, [markerCacheRef]);
 
-  const addMarkerRef = (marker, key) => {
-    if (marker && markerRefs[key]) return;
-    if (!marker && !markerRefs[key]) return;
+  const addMarkerToCache = (marker, key) => {
+    if (!marker || markerCacheRef[key]) return;
 
-    setMarkerRefs((prev) => {
-      if (marker) {
-        return {...prev, [key]: marker};
-      } else {
-        const {[key]: _, ...newMarkerRefs} = prev;
-        return newMarkerRefs;
-      }
+    setMarkerCacheRef((prev) => {
+      return {...prev, [key]: marker};
+    });
+  };
+  
+  const removeMarkerFromCache = (key) => {
+    if (!markerCacheRef[key]) return;
+
+    setMarkerCacheRef(({[key]: _, ...newMarkerRefs}) => {
+      return newMarkerRefs;
     });
   };
 
   return (
-    <>
+    <ClustererContext.Provider value={{add: addMarkerToCache, remove: removeMarkerFromCache}}>
       {children}
-    </>
+    </ClustererContext.Provider>
   );
 };
 
