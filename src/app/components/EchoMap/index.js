@@ -2,8 +2,8 @@
 'use client';
 import {useState, useCallback, useEffect} from 'react';
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
-import {EchoModal} from '@/app/components';
-import {addMarkers, generateMapRestriction} from '@/app/helpers';
+import {EchoClusterer, EchoModal, EchoMarker} from '@/app/components';
+import {generateMapRestriction} from '@/app/helpers';
 const GMAPS_KEY = process.env.NEXT_PUBLIC_GMAPS_KEY;
 const GMAPS_MAP_ID = process.env.NEXT_PUBLIC_GMAPS_MAP_ID;
 const mapStyle = {
@@ -18,14 +18,6 @@ const EchoMap = ({center, echoes}) => {
   const [restriction, setRestriction] = useState(null);
   const [loadedAPI, setLoadedAPI] = useState(false);
   const [modalData, setModalData] = useState(null);
-  const [mapInstance, setMapInstance] = useState(null);
-  
-  useEffect(() => {
-    if (mapInstance) {
-      const cleanupMarkers = addMarkers(mapInstance, echoes, setModalData);
-      return cleanupMarkers;
-    }
-  }, [echoes, mapInstance]);
 
   useEffect(() => {
     if (loadedAPI) {
@@ -34,13 +26,11 @@ const EchoMap = ({center, echoes}) => {
     return () => {setRestriction(null)};
   }, [center, loadedAPI]);
   
-  const onLoadApi = () => setLoadedAPI(true);
+  const onLoadApi = useCallback(() => setLoadedAPI(true), []);
   const onLoadMap = useCallback(
     (map) => {
-      setMapInstance(map);
       map.addListener('click', () => setModalData(null));
-    }, []
-  );
+    }, []);
 
   return (
     <>
@@ -57,7 +47,11 @@ const EchoMap = ({center, echoes}) => {
           zoom={18}
           disableDefaultUI={true}
           style={mapStyle}
-        />
+        >
+          <EchoClusterer onClick={setModalData}>
+            {echoes.map((e) => <EchoMarker key={e.id} onClick={setModalData} echo={e} />)}
+          </EchoClusterer>
+        </Map>
       </APIProvider>
       <EchoModal echoes={modalData} />
     </>
