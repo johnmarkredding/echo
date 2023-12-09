@@ -1,7 +1,7 @@
 /*global google*/
 const QUERY_RADIUS_M = process.env.NEXT_PUBLIC_QUERY_RADIUS_M;
 
-const generateMapRestriction = (center, setRestriction) => {
+const generateMapRestriction = (center) => {
   if (!google.maps.geometry) {
     if (QUERY_RADIUS_M) {
       throw Error(
@@ -14,14 +14,14 @@ const generateMapRestriction = (center, setRestriction) => {
     const {computeOffset} = google.maps.geometry.spherical;
     const radiusM = Number(QUERY_RADIUS_M) + 50; // add margin
 
-    setRestriction({
+    return {
       latLngBounds: {
         north: computeOffset(center, radiusM, 0).lat(),
         south: computeOffset(center, radiusM + 100, 180).lat(), // Extra margin for input form…
         east: computeOffset(center, radiusM, 90).lng(),
         west: computeOffset(center, radiusM, -90).lng()
       }
-    });
+    };
   }
 };
 
